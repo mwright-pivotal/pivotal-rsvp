@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.github.sendgrid.SendGrid;
+
 import com.pivotal.rsvp.model.Registrant;
 
 /**
@@ -63,6 +65,11 @@ public class HomeController {
 		return "thanks";
 	}
 	
+	@RequestMapping(value = "/invite", method = RequestMethod.GET)
+	public String register(Locale locale, Model model) {
+		return "invite";
+	}
+	
 	private JsonNode getEnv() {
 		if (envJSON==null) {
 			envJSON = System.getenv("VCAP_APPLICATION");
@@ -83,5 +90,11 @@ public class HomeController {
 		}
 		
 		return rootEnvNode;
+	}
+	
+	private void alertRegistration () {
+		String usr = this.getEnv().path("sendgrid_username").getTextValue();
+		
+		SendGrid sendgrid = new SendGrid("sendgrid_username", "sendgrid_password");
 	}
 }

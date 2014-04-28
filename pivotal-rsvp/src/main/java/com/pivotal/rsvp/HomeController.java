@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -13,7 +14,11 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +27,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.github.sendgrid.SendGrid;
 import com.pivotal.rsvp.model.Registrant;
+import com.pivotal.rsvp.model.RegistrantRepository;
 
 /**
  * Handles requests for the application home page.
  */
+@Service
 @Controller
 public class HomeController {
 	
@@ -36,6 +43,10 @@ public class HomeController {
 	private static JsonNode rootServicesNode = null;
 	@PersistenceContext(unitName="pivotal-rsvp")
 	private EntityManager em;
+	
+	private CrudRepository<Registrant, Long> registrantRepository;
+	@Resource
+    private RegistrantRepository personRepository;
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -57,9 +68,11 @@ public class HomeController {
 		registrant.setEventID(eventID);
 		model.addAttribute("registrant", registrant);
 		
+		
 		return "register";
 	}
 	
+	@Transactional
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String register(@ModelAttribute("Registrant") Registrant registrant ,Locale locale, Model model) {
 		
@@ -70,6 +83,9 @@ public class HomeController {
 		}
 		
 		this.alertRegistration(registrant);
+		this.registrantRepository.save(registrant);
+		personRepository.save(registrant);
+		
 		return "thanks";
 	}
 	
@@ -79,6 +95,8 @@ public class HomeController {
 	}
 	
 	private JsonNode getEnv() {
+		if (registrantRepository==null)
+			this.setUpRepos();
 		if (envJSON==null) {
 			envJSON = System.getenv("VCAP_APPLICATION");
 			if (envJSON==null)
@@ -132,8 +150,16 @@ public class HomeController {
 		sendgrid.addTo("mwright@gopivotal.com");
 		sendgrid.setFrom(registrant.getEmailAddr());
 		sendgrid.setSubject("Workshop registration received!");
-		sendgrid.setText("Name: " + registrant.getName());
+		sendgrid.setText("Name: " + registrant.getName() + "\n"
+				+ "Email Addr: " + registrant.getEmailAddr() + "\n"
+				+ "Phone Nbr: " + registrant.getPhoneNbr());
 
 		sendgrid.send();
+	}
+	
+	private void setUpRepos() {
+
+        registrantRepository = new SimpleJpaRepository<Registrant, Long>(Registrant.class, em);
+
 	}
 }

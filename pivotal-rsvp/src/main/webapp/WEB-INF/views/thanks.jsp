@@ -17,9 +17,10 @@
 <link href="${pageContext.servletContext.contextPath}/resources/base/home_files/application-77e95d0a00de1e891a42937543958acf.css" media="screen" rel="stylesheet">
 <script src="${pageContext.servletContext.contextPath}/resources/base/home_files/application-9656b783446a3defe004ae299b95931d.js"></script></head><body id="without-user">
 <div style="margin-left: 0px; width: 485px;" class="login">
+<span style="color: white;">
 Pivotal Cloud Foundry Workshop Invitation<br>
 Thank you!
-<span style="color: white;"></span><br style="color: white;">
+</span><br style="color: white;">
 <br style="color: white;">
 <span style="color: white;"></span><br>
 

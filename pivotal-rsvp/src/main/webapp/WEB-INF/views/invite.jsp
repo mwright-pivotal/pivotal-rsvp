@@ -22,7 +22,7 @@ PaaS for doing rapid application development.&nbsp;&nbsp; Coca-Cola
 Enterprises will be hosting the workshop.</span><br style="color: white;">
 <br style="color: white;">
 <span style="color: white;">As software continues to disrupt a wide
-variety of industries, there’s been a decided shift in the platforms
+variety of industries, there has been a decided shift in the platforms
 and processes used to support these businesses, with many looking to
 PaaS offerings to help them develop new applications quicker and at
 great scale.&nbsp; The world is changing rapidly and the trend is to
@@ -54,10 +54,10 @@ provisioned and consumed on demand.&nbsp;&nbsp; </span><br style="color: white;"
 <span style="color: white;">The workshop will take place at:</span><br style="color: white;">
 <br style="color: white;">
 <span style="color: white;">Coca-cola Enterprises</span><br style="color: white;">
-<span style="color: white;">2500 Windy Ridge Pkwy</span><br style="color: white;">
-<span style="color: white;">Atlanta, GA ?????</span><br style="color: white;">
-<span style="color: white;">Start: 9:00 AM</span><br style="color: white;">
-<span style="color: white;">End: 5:00 PM</span><br style="color: white;">
+<span style="color: white;">2500 Windy Ridge Pkwy SE, #700</span><br style="color: white;">
+<span style="color: white;">Atlanta, GA 30339</span><br style="color: white;">
+<span style="color: white;">Start: 9:00 AM, Thursday, May 22 2014</span><br style="color: white;">
+<span style="color: white;">End: 5:00 PM, Thursday, May 22 2014</span><br style="color: white;">
 <span style="color: white;">Note: Lunch will be provided.</span><br style="color: white;">
 <br style="color: white;">
 <span style="color: white;">Please RSVP at <a href="http://pivotal-rsvp.cfapps.io?eventID=1111" target="_blank">RSVP Now</a></span><br style="color: white;">

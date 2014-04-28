@@ -27,6 +27,7 @@ Pivotal Cloud Foundry Workshop Invitation<br>
 <span class='add-on'>
 <i class='fa fa-user'></i>
 </span>
+<span style="color: white;">
    <table>
     <tr>
     	<label for="name">Name</label>
@@ -50,6 +51,7 @@ Pivotal Cloud Foundry Workshop Invitation<br>
         </td>
     </tr>
 </table>
+</span>
 </div></div>
 </div>
 </fieldset>

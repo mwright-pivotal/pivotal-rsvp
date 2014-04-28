@@ -5,6 +5,9 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.github.sendgrid.SendGrid;
-
 import com.pivotal.rsvp.model.Registrant;
 
 /**
@@ -29,7 +31,11 @@ public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	private static String envJSON = null;
+	private static String servicesJSON = null;
 	private static JsonNode rootEnvNode = null;
+	private static JsonNode rootServicesNode = null;
+	@PersistenceContext(unitName="pivotal-rsvp")
+	private EntityManager em;
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -62,6 +68,8 @@ public class HomeController {
 			model.addAttribute("instance_index",this.getEnv().path("instance_index").getBigIntegerValue());
 			//model.addAttribute("application_uris",this.getEnv().path("application_uris").getElements().next().asText());
 		}
+		
+		this.alertRegistration(registrant);
 		return "thanks";
 	}
 	
@@ -80,6 +88,7 @@ public class HomeController {
 		
 		 	try {
 				rootEnvNode = mapper.readTree(envJSON);
+				logger.info("ENV: " + rootEnvNode);
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -92,9 +101,39 @@ public class HomeController {
 		return rootEnvNode;
 	}
 	
-	private void alertRegistration () {
-		String usr = this.getEnv().path("sendgrid_username").getTextValue();
+	private JsonNode getCloudServicesInfo() {
+		if (servicesJSON==null) {
+			servicesJSON = System.getenv("VCAP_SERVICES");
+			if (servicesJSON==null)
+					return null;
+			
+			ObjectMapper mapper = new ObjectMapper();
 		
-		SendGrid sendgrid = new SendGrid("sendgrid_username", "sendgrid_password");
+		 	try {
+				rootServicesNode = mapper.readTree(servicesJSON);
+				logger.info("SERVICES: " + rootServicesNode);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return rootServicesNode;
+	}
+	
+	private void alertRegistration (Registrant registrant) {
+		String usr = this.getCloudServicesInfo().path("sendgrid").get(0).getPath("credentials").getPath("username").getTextValue();
+		String pswd = this.getCloudServicesInfo().path("sendgrid").get(0).getPath("credentials").getPath("password").getTextValue();
+		SendGrid sendgrid = new SendGrid(usr, pswd);
+		
+		sendgrid.addTo("mwright@gopivotal.com");
+		sendgrid.setFrom(registrant.getEmailAddr());
+		sendgrid.setSubject("Workshop registration received!");
+		sendgrid.setText("Name: " + registrant.getName());
+
+		sendgrid.send();
 	}
 }

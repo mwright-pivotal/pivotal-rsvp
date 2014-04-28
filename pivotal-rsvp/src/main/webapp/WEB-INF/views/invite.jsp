@@ -7,7 +7,7 @@
 <meta content="text/javascript" http-equiv="Content-Script-Type">
 <meta content="text/css" http-equiv="Content-Style-Type">
 <meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible">
-<link href="/favicon.png" rel="icon" type="image/png"><title>Ops Manager</title>
+<link href="/favicon.png" rel="icon" type="image/png"><title>You're Invited!</title>
 
 <meta content="authenticity_token" name="csrf-param">
 <meta content="Ydy5lm7k0vswzFuG7LnyOBhBYZCglmcbdiiJ5LTdJMQ=" name="csrf-token">

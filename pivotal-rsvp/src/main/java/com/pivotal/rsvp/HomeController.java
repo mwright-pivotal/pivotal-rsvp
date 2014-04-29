@@ -152,7 +152,8 @@ public class HomeController {
 		sendgrid.setSubject("Workshop registration received!");
 		sendgrid.setText("Name: " + registrant.getName() + "\n"
 				+ "Email Addr: " + registrant.getEmailAddr() + "\n"
-				+ "Phone Nbr: " + registrant.getPhoneNbr());
+				+ "Phone Nbr: " + registrant.getPhoneNbr() + "\n"
+				+ "Event ID: " + registrant.getEventID());
 
 		sendgrid.send();
 	}

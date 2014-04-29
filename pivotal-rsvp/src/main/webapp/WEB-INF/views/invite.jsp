@@ -14,7 +14,7 @@
 <link href="${pageContext.servletContext.contextPath}/resources/base/home_files/application-77e95d0a00de1e891a42937543958acf.css" media="screen" rel="stylesheet">
 <script src="${pageContext.servletContext.contextPath}/resources/base/home_files/application-9656b783446a3defe004ae299b95931d.js"></script></head><body id="without-user">
 <div style="margin-left: 0px; width: 485px;" class="login">
-Pivotal Cloud Foundry Workshop Invitation<br>
+<span style="color: white;">Pivotal Cloud Foundry Workshop Invitation<br></span><br style="color: white;">
 <br>
 <span style="color: white;">Please join us for a free hands-on workshop
 with Pivotal Cloud Foundry, the industry's most compelling turn-key
@@ -54,7 +54,8 @@ provisioned and consumed on demand.&nbsp;&nbsp; </span><br style="color: white;"
 <span style="color: white;">The workshop will take place at:</span><br style="color: white;">
 <br style="color: white;">
 <span style="color: white;">Coca-cola Enterprises</span><br style="color: white;">
-<span style="color: white;">2500 Windy Ridge Pkwy SE, #700</span><br style="color: white;">
+<span style="color: white;">2500 Windy Ridge Pkwy SE</span><br style="color: white;">
+<span style="color: white;">12th Floor, Room 12013</span><br style="color: white;">
 <span style="color: white;">Atlanta, GA 30339</span><br style="color: white;">
 <span style="color: white;">Start: 9:00 AM, Thursday, May 22 2014</span><br style="color: white;">
 <span style="color: white;">End: 5:00 PM, Thursday, May 22 2014</span><br style="color: white;">

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -14,6 +15,9 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Controller;
@@ -32,8 +36,8 @@ import com.pivotal.rsvp.model.RegistrantRepository;
 /**
  * Handles requests for the application home page.
  */
-@Service
 @Controller
+@EnableAutoConfiguration
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -41,16 +45,21 @@ public class HomeController {
 	private static String servicesJSON = null;
 	private static JsonNode rootEnvNode = null;
 	private static JsonNode rootServicesNode = null;
-	@PersistenceContext(unitName="pivotal-rsvp")
-	private EntityManager em;
-	
+
+	@Autowired
 	private CrudRepository<Registrant, Long> registrantRepository;
-	@Resource
-    private RegistrantRepository personRepository;
+
+	@Value("${invite.eventId:test}")
+	private String eventId = "0000";
+
+	@Value("${invite.adminEmail:test}")
+	private String adminEmail = "mwright@pivotal.io";
+//	@Autowired
+//    private RegistrantRepository personRepository;
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String home(@RequestParam(value="eventID", defaultValue="0000") String eventID ,Locale locale, Model model) {
 		String msg = "Event id is " + eventID;
 		
@@ -84,19 +93,19 @@ public class HomeController {
 		
 		this.alertRegistration(registrant);
 		this.registrantRepository.save(registrant);
-		personRepository.save(registrant);
+		//personRepository.save(registrant);
 		
 		return "thanks";
 	}
 	
-	@RequestMapping(value = "/invite", method = RequestMethod.GET)
-	public String register(Locale locale, Model model) {
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String register(Locale locale, Map<String, Object> model) {
+		model.put("eventId", this.eventId);
+		model.put("eventDescription", this.eventId+".html");
 		return "invite";
 	}
 	
 	private JsonNode getEnv() {
-		if (registrantRepository==null)
-			this.setUpRepos();
 		if (envJSON==null) {
 			envJSON = System.getenv("VCAP_APPLICATION");
 			if (envJSON==null)
@@ -147,7 +156,7 @@ public class HomeController {
 		String pswd = this.getCloudServicesInfo().path("sendgrid").get(0).getPath("credentials").getPath("password").getTextValue();
 		SendGrid sendgrid = new SendGrid(usr, pswd);
 		
-		sendgrid.addTo("mwright@gopivotal.com");
+		sendgrid.addTo(this.adminEmail);
 		sendgrid.setFrom(registrant.getEmailAddr());
 		sendgrid.setSubject("Workshop registration received!");
 		sendgrid.setText("Name: " + registrant.getName() + "\n"
@@ -156,11 +165,5 @@ public class HomeController {
 				+ "Event ID: " + registrant.getEventID());
 
 		sendgrid.send();
-	}
-	
-	private void setUpRepos() {
-
-        registrantRepository = new SimpleJpaRepository<Registrant, Long>(Registrant.class, em);
-
 	}
 }

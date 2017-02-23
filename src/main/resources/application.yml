@@ -11,5 +11,5 @@ spring:
       ddl-auto: create
 
 invite:
-  eventId: 1012
+  eventId: 0000
   adminEmail: mwright@pivotal.io

@@ -63,7 +63,7 @@ Pivotal Cloud Foundry Workshop Invitation<br>
 
 </div>
 <div class="footer"><footer class="site-footer">
-<span class="version">Pivotal Cloud Foundry</span> <span>� 2014 GoPivotal Inc. All Rights Reserved.</span>
+<span class="version">Pivotal Cloud Foundry</span> <span>� 2017 Pivotal Inc. All Rights Reserved.</span>
 <span class="float-right"><a href="/eula">End User License Agreement</a></span>
 </footer>
 </div>

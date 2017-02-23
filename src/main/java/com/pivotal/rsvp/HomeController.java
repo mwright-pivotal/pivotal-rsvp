@@ -24,10 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.github.sendgrid.SendGrid;
 import com.pivotal.rsvp.model.Registrant;
@@ -50,7 +47,7 @@ public class HomeController {
 	private CrudRepository<Registrant, Long> registrantRepository;
 
 	@Value("${invite.eventId:test}")
-	private String eventId = "0000";
+	private String assignedEventId = "0000";
 
 	@Value("${invite.adminEmail:test}")
 	private String adminEmail = "mwright@pivotal.io";
@@ -99,9 +96,15 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String register(Locale locale, Map<String, Object> model) {
-		model.put("eventId", this.eventId);
-		model.put("eventDescription", this.eventId+".html");
+	public String register(Locale locale, Map<String, Object> model, @RequestHeader(name="host") String hostStr) {
+		String eventId=assignedEventId;
+		if (assignedEventId.equals("0")) {
+			String[] parts = hostStr.split("[.]");
+			eventId = parts[0];
+			logger.info("Using host name for the event ID: " + eventId);
+		}
+		model.put("eventId", eventId);
+		model.put("eventDescription", eventId+".html");
 		return "invite";
 	}
 	
@@ -152,6 +155,10 @@ public class HomeController {
 	}
 	
 	private void alertRegistration (Registrant registrant) {
+		if (this.getCloudServicesInfo().path("sendgrid")==null || this.getCloudServicesInfo().path("sendgrid").size()==0) {
+			logger.info("Sendgrid service binding not found, email not sent.");
+			return;
+		}
 		String usr = this.getCloudServicesInfo().path("sendgrid").get(0).getPath("credentials").getPath("username").getTextValue();
 		String pswd = this.getCloudServicesInfo().path("sendgrid").get(0).getPath("credentials").getPath("password").getTextValue();
 		SendGrid sendgrid = new SendGrid(usr, pswd);
